@@ -134,10 +134,9 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
                     } else {
                         if (product !== undefined) {
                             const arrayProds = carro.productos
-                            //const index = arrayProds.lastIndexOf({product})
                             const aux = product.id
                             const index = arrayProds.map(prod => prod.id).lastIndexOf(aux)
-                            if (index !== undefined) {
+                            if (index !== -1) {
                                 arrayProds.splice((index), 1, {})
                                 carro.productos = arrayProds
                                 fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
