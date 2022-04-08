@@ -4,8 +4,6 @@ const router = express.Router()
 const Carrito = require('../classes/Carrito')
 const Producto = require('../classes/Producto')
 
-//const contentProd = fs.readFileSync('./data/productos.json', 'utf-8')
-
 router.get('/', async (req, res) => {
     try {
         const content = await fs.promises.readFile('./data/carritos.json', 'utf-8')
@@ -129,27 +127,18 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
             if (carro !== undefined) {
                 try {
                     const contentProd = fs.readFileSync('./data/productos.json', 'utf-8')
-                    const productos = JSON.parse(contentProd)
+                    const productos = JSON.parse(contentProd)                    
                     const product = productos[(req.params.id_prod)-1]
                     if (isNaN(req.params.id_prod)) {
                         res.json({ error: 'El parámetro id: producto ingresado, no es un número' })
                     } else {
                         if (product !== undefined) {
                             const arrayProds = carro.productos
-                            arrayProds.splice((req.params.id-1), 1, {})
+                            const index = arrayProds.lastIndexOf(product)
+                            arrayProds.splice((index), 1, {})
                             carro.productos = arrayProds
                             fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
                             res.json({ mensaje: 'el producto fue eliminado exitosamente del carrito' })
-
-                            /*
-                            const arrayProds = carro.productos
-                            arrayProds.push(product)
-                            carro.productos = arrayProds
-                            fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
-                            res.type('json')
-                            res.send(JSON.stringify(carro, null, 2))
-                            */
-
                         } else {       
                             res.json({ error: 'Producto no encontrado'})                  
                         }                        
