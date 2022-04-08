@@ -86,7 +86,7 @@ router.get('/:id/productos/', async (req, res) => {
                 if (carro.productos !== undefined) {
                     res.json(carro.productos)
                 } else {
-                    res.json({ error: 'El carrito fue eliminado' })
+                    res.json({ error: 'El carrito fue eliminado con anterioridad' })
                 }               
             } else {
                 res.json({ error: 'Carrito no encontrado'}) 
@@ -107,7 +107,7 @@ router.delete('/:id', (req, res) => {
         } else if (carro !== undefined) {
             carritos.splice((req.params.id-1), 1 , {})
             fs.writeFileSync('./data/carritos.json', JSON.stringify(carritos))
-            res.json({ mensaje: 'el carrito fue eliminado exitosamente' })
+            res.json({ mensaje: 'El carrito fue eliminado exitosamente' })
         } else {
                 res.json({ error: 'Carrito no encontrado'})
         }
@@ -140,9 +140,9 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
                                 arrayProds.splice((index), 1, {})
                                 carro.productos = arrayProds
                                 fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
-                                res.json({ mensaje: 'el producto fue eliminado exitosamente del carrito' })
+                                res.json({ mensaje: 'El Producto fue eliminado exitosamente del carrito' })
                             } else {
-                                res.json({ error: 'Producto no encontrado el Carrito'})
+                                res.json({ error: 'Producto no encontrado en el Carrito seleccionado'})
                             }
                         } else {       
                             res.json({ error: 'Producto no encontrado en la Lista de Productos'})                  
@@ -152,7 +152,7 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
                     res.json({ error: 'Error de lectura: El archivo productos.json se encuentra vacío' })
                 }              
             } else {
-                res.json({ error: 'Carro no encontrado'})
+                res.json({ error: 'Carrito no encontrado'})
             }           
         }        
     } catch (e) {       
