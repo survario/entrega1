@@ -21,6 +21,6 @@ app.use('/carrito', routerCarrito)
 app.use('/productos', routerProductos)
 
 //The 404 Route (ALWAYS Keep this as the last route)
-app.get('*', function(req, res){
+app.use('*', function(req, res){
     res.send({ error: 404, descripcion: 'Ruta No Implementada' })
   })

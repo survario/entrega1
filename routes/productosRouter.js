@@ -46,6 +46,9 @@ router.post('/', (req, res) => {
         res.type('json')
         res.send(JSON.stringify(product, null, 2))
     }
+//    } else {
+//        res.json({ error: 'Usuario no Autorizado', descripcion: 'ruta /productos método DEKETE requiere Administrador' })      
+//    }
 })
 
 router.get('/:id?', async (req, res) => {
@@ -73,13 +76,26 @@ router.put('/:id', (req, res) => {
         const product = productos[(req.params.id)-1]
         const respuesta = {} 
         let producto = {id: req.params.id} 
-        producto.timestamp = product.timestamp  
         if (isNaN(req.params.id)) {
             res.json({ error: 'el parametro no es un numero' })
         } else if (product !== undefined) {
-            respuesta.before = productos[(req.params.id)-1];    
-
+            respuesta.before = productos[(req.params.id)-1];             
+            
             const promise1 = new Promise((resolve, reject) => {
+                if (req.body.timestamp !== undefined) {
+                    producto.timestamp = req.body.timestamp
+                    return producto
+                } else {
+                    if (product.timestamp !== undefined) {   
+                        producto.timestamp = product.timestamp                 
+                        return producto
+                    } else {
+                        producto.timestamp = new Date()
+                        return producto
+                    }                
+                }
+            })
+            const promise2 = new Promise((resolve, reject) => {
                 if (req.body.title !== undefined) {
                     producto.title = req.body.title
                     return producto
@@ -88,7 +104,7 @@ router.put('/:id', (req, res) => {
                     return producto
                 }
             })
-            const promise2 = new Promise((resolve, reject) => {
+            const promise3 = new Promise((resolve, reject) => {
                 if (req.body.description !== undefined) {
                     producto.description = req.body.description
                     return producto
@@ -97,7 +113,7 @@ router.put('/:id', (req, res) => {
                     return producto
                 }
             })
-            const promise3 = new Promise((resolve, reject) => {
+            const promise4 = new Promise((resolve, reject) => {
                 if (req.body.code !== undefined) {
                     producto.code = req.body.code
                     return producto
@@ -106,7 +122,7 @@ router.put('/:id', (req, res) => {
                     return producto
                 }
             })
-            const promise4 = new Promise((resolve, reject) => {
+            const promise5 = new Promise((resolve, reject) => {
                 if (req.body.thumbnail !== undefined) {
                     producto.thumbnail = req.body.thumbnail
                     return producto
@@ -115,7 +131,7 @@ router.put('/:id', (req, res) => {
                     return producto
                 }
             })
-            const promise5 = new Promise((resolve, reject) => {
+            const promise6 = new Promise((resolve, reject) => {
                 if (req.body.price !== undefined) {
                     producto.price = req.body.price
                     return producto
@@ -124,7 +140,7 @@ router.put('/:id', (req, res) => {
                     return producto
                 }
             })
-            const promise6 = new Promise((resolve, reject) => {
+            const promise7 = new Promise((resolve, reject) => {
                 if (req.body.stock !== undefined) {
                     producto.stock = req.body.stock
                     return producto
@@ -133,7 +149,7 @@ router.put('/:id', (req, res) => {
                     return producto
                 }
             })
-            Promise.all([promise1, promise2, promise3, promise4, promise5, promise6]).then(function(producto) {
+            Promise.all([promise1, promise2, promise3, promise4, promise5, promise6, promise7]).then(function(producto) {
                 return producto
             })
             respuesta.update = producto
