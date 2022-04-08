@@ -84,9 +84,15 @@ router.get('/:id/productos/', async (req, res) => {
         if (isNaN(req.params.id)) {
             res.json({ error: 'El parámetro no es un número' })
         } else {
-            carro !== undefined
-                ? res.json(carro.productos)
-                : res.json({ error: 'Carrito no encontrado'})
+            if (carro !== undefined) {
+                if (carro.productos !== undefined) {
+                    res.json(carro.productos)
+                } else {
+                    res.json({ error: 'El carrito fue eliminado' })
+                }               
+            } else {
+                res.json({ error: 'Carrito no encontrado'}) 
+            }
         } 
     } catch (err) {
         res.json({ error: 'Error de lectura: El archivo está vacío o no se encuentra' })
@@ -103,9 +109,9 @@ router.delete('/:id', (req, res) => {
         } else if (carro !== undefined) {
             carritos.splice((req.params.id-1), 1 , {})
             fs.writeFileSync('./data/carritos.json', JSON.stringify(carritos))
-            res.json({ mensaje: 'el producto fue eliminado exitosamente' })
+            res.json({ mensaje: 'el carrito fue eliminado exitosamente' })
         } else {
-                res.json({ error: 'producto no encontrado'})
+                res.json({ error: 'Carrito no encontrado'})
         }
     } catch (e) {
                 res.json({ error: 'Error de lectura: El archivo está vacío o no se encuentra' })
@@ -121,9 +127,36 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
             res.json({ error: 'El parámetro id: carrito ingresado, no es un número' })
         } else {
             if (carro !== undefined) {
-                
-                carro.productos
-             
+                try {
+                    const contentProd = fs.readFileSync('./data/productos.json', 'utf-8')
+                    const productos = JSON.parse(contentProd)
+                    const product = productos[(req.params.id_prod)-1]
+                    if (isNaN(req.params.id_prod)) {
+                        res.json({ error: 'El parámetro id: producto ingresado, no es un número' })
+                    } else {
+                        if (product !== undefined) {
+                            const arrayProds = carro.productos
+                            arrayProds.splice((req.params.id-1), 1, {})
+                            carro.productos = arrayProds
+                            fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
+                            res.json({ mensaje: 'el producto fue eliminado exitosamente del carrito' })
+
+                            /*
+                            const arrayProds = carro.productos
+                            arrayProds.push(product)
+                            carro.productos = arrayProds
+                            fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
+                            res.type('json')
+                            res.send(JSON.stringify(carro, null, 2))
+                            */
+
+                        } else {       
+                            res.json({ error: 'Producto no encontrado'})                  
+                        }                        
+                    }                    
+                } catch(err) {
+                    res.json({ error: 'Error de lectura: El archivo productos.json se encuentra vacío' })
+                }              
             } else {
                 res.json({ error: 'Carro no encontrado'})
             }           
