@@ -134,13 +134,19 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
                     } else {
                         if (product !== undefined) {
                             const arrayProds = carro.productos
-                            const index = arrayProds.lastIndexOf(product)
-                            arrayProds.splice((index), 1, {})
-                            carro.productos = arrayProds
-                            fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
-                            res.json({ mensaje: 'el producto fue eliminado exitosamente del carrito' })
+                            //const index = arrayProds.lastIndexOf({product})
+                            const aux = product.id
+                            const index = arrayProds.map(prod => prod.id).lastIndexOf(aux)
+                            if (index !== undefined) {
+                                arrayProds.splice((index), 1, {})
+                                carro.productos = arrayProds
+                                fs.writeFileSync('./data/carritos.json', JSON.stringify([...carritos,]))
+                                res.json({ mensaje: 'el producto fue eliminado exitosamente del carrito' })
+                            } else {
+                                res.json({ error: 'Producto no encontrado el Carrito'})
+                            }
                         } else {       
-                            res.json({ error: 'Producto no encontrado'})                  
+                            res.json({ error: 'Producto no encontrado en la Lista de Productos'})                  
                         }                        
                     }                    
                 } catch(err) {
