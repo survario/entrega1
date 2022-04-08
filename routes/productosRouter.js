@@ -177,20 +177,19 @@ router.delete('/:id', (req, res) => {
             const product = productos[(req.params.id)-1]
             if (isNaN(req.params.id)) {
                 res.json({ error: 'El parámetro no es un número' })
-            } else if (product !== undefined) {
+            } else if (product !== undefined && Object.keys(product).length !== 0) {
                 productos.splice((req.params.id-1), 1 , {})
                 fs.writeFileSync('./data/productos.json', JSON.stringify(productos))
-                res.json({ mensaje: 'el producto fue eliminado exitosamente' })
+                res.json({ mensaje: 'El Producto fue eliminado exitosamente' })
             } else {
-                    res.json({ error: 'producto no encontrado'})
+                res.json({ error: 'Producto no encontrado'})
             }
         } catch (e) {
-                    res.json({ error: 'Error de lectura: El archivo está vacío o no se encuentra' })
+            res.json({ error: 'Error de lectura: El archivo está vacío o no se encuentra' })
         }
     } else {
         res.json({ error: 'Usuario no autorizado', descripcion: 'Ruta /productos/:id método DELETE requiere ADMIN añadir < ?admin=true > al final de la ruta' })      
     }
 })
 
-//exportamos el router
 module.exports = router

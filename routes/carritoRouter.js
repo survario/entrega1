@@ -104,7 +104,7 @@ router.delete('/:id', (req, res) => {
         const carro = carritos[(req.params.id)-1]
         if (isNaN(req.params.id)) {
             res.json({ error: 'El parámetro no es un número' })
-        } else if (carro !== undefined) {
+        } else if (carro !== undefined && Object.keys(carro).length !== 0) {
             carritos.splice((req.params.id-1), 1 , {})
             fs.writeFileSync('./data/carritos.json', JSON.stringify(carritos))
             res.json({ mensaje: 'El carrito fue eliminado exitosamente' })
@@ -124,7 +124,7 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
         if (isNaN(req.params.id)) {
             res.json({ error: 'El parámetro id: carrito ingresado, no es un número' })
         } else {
-            if (carro !== undefined) {
+            if (carro !== undefined && Object.keys(carro).length !== 0) {
                 try {
                     const contentProd = fs.readFileSync('./data/productos.json', 'utf-8')
                     const productos = JSON.parse(contentProd)                    
@@ -132,7 +132,7 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
                     if (isNaN(req.params.id_prod)) {
                         res.json({ error: 'El parámetro id: producto ingresado, no es un número' })
                     } else {
-                        if (product !== undefined) {
+                        if (product !== undefined && Object.keys(product). length !== 0) {
                             const arrayProds = carro.productos
                             const aux = product.id
                             const index = arrayProds.map(prod => prod.id).lastIndexOf(aux)
@@ -160,5 +160,4 @@ router.delete('/:id/productos/:id_prod', (req, res) => {
     }
 })
 
-//exportamos el router
 module.exports = router
